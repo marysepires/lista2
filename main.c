@@ -1,50 +1,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+
 void preenche(int *vet, int tam){
     int i;
     if (vet != NULL){ // preenchimento do vetor
         for(i = 0; i < tam; i++)
             vet[i] = 1 + rand() % 10001;
-    }
-}
-void imprime (int *vet, int tam){
- int i;
-        for(i = 0; i < tam; i++){
-            printf("\n[%d] ", vet[i]);
+    /*for(i = 0; i < tam; i++)
+            printf("[%d] ", vet[i]); // mostrar os valores do vetor
+        } else{
+            printf("\nErro em alocar");*/
         }
 }
-void OrdenaVetor(int *vet, int tam){
-      int i, j, aux;
 
-      for (i=0;i<tam-1;i++){
-          for (j=i+1;j<tam;j++){
-                  if (vet[i] > vet[j]){
-                      aux=vet[i];
-                      vet[i]=vet[j];
-                      vet[j]=aux;
-                   }
-              }
-      }
-
- }
- int PesquisaBinaria(int *vet, int tam, int n){
-     int comeco = 0; //Limite inferior (em C o índice inicial é zero)
-     int final = tam-1; //Limite superior (tamanho do vetor -1
-                            // porque o índice inicial é zero )
-     int meio;
-     while (comeco <= final)
-     {
-          //meio = comeco + (final-comeco)/2;
-          meio = (comeco + final)/2;
-          if (n == vet[meio])
-               return meio;
-          else if (n < vet[meio])
-               final = meio-1;
-          else
-               comeco = meio+1;
-     }
-     return -1;   // não encontrado
+int buscaSequencial(int *vet, int n, int tam){ // busca sequencial
+    int i;
+    for (i = 0; i < tam; i++){
+        if(vet[i] == n){
+            return i;
+        }
+    }
+    return -1;
 }
 int main(){
     clock_t t;
@@ -54,24 +31,23 @@ int main(){
     scanf("%d", &tam);
     vet = (int *) malloc(tam * sizeof(int)); // aloca a mémoria
     preenche(vet, tam);
-    OrdenaVetor(vet, tam);
-    imprime (vet, tam);
 
-
-    printf("\nValor a ser pesquisado?:");
-    scanf ("%d", &n);
+    printf ("\nQual valor deseja buscar?:");
+    scanf("%d", &n);
 
     t = clock();
-    pos = PesquisaBinaria(vet,tam, n);
+    pos = buscaSequencial(vet, n, tam);
     t = clock() - t;
-    if (pos==-1){
-        printf("\n\nValor nao encontrado no vetor!");
+
+    if(pos == -1){
+        printf("Valor não encontrado");
     }else{
-        printf("\n\nValor encontrado na posicao %d", pos+1);
+        printf ("Valor encontrado na posição %d", pos +1);
     }
 
     printf("\nTempo de execucao: %lf", ((double)t)/((CLOCKS_PER_SEC/1000)));
     free(vet);
+
 
     return 0;
 }
