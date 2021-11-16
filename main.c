@@ -7,10 +7,10 @@ void preenche(int *vet, int tam){
     if (vet != NULL){ // preenchimento do vetor
         for(i = 0; i < tam; i++)
             vet[i] = 1 + rand() % 10001;
-    /*for(i = 0; i < tam; i++)
+    for(i = 0; i < tam; i++)
             printf("[%d] ", vet[i]); // mostrar os valores do vetor
         } else{
-            printf("\nErro em alocar");*/
+            printf("\nErro em alocar");
         }
 }
 
@@ -24,7 +24,6 @@ int buscaSequencial(int *vet, int n, int tam){ // busca sequencial
     return -1;
 }
 int main(){
-    clock_t t;
     int n, i, *vet, tam, pos;
 
     printf("Tamanho do vetor: ");
@@ -35,9 +34,9 @@ int main(){
     printf ("\nQual valor deseja buscar?:");
     scanf("%d", &n);
 
-    t = clock();
+    clock_t begin = clock();
     pos = buscaSequencial(vet, n, tam);
-    t = clock() - t;
+    clock_t end = clock();
 
     if(pos == -1){
         printf("Valor não encontrado");
@@ -45,7 +44,7 @@ int main(){
         printf ("Valor encontrado na posição %d", pos +1);
     }
 
-    printf("\nTempo de execucao: %lf", ((double)t)/((CLOCKS_PER_SEC/1000)));
+    printf("\nTempo de execucao: %f segundos", (double)(end - begin) / CLOCKS_PER_SEC);
     free(vet);
 
 
