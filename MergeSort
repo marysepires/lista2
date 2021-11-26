@@ -10,37 +10,37 @@ void preenche(int *arr, int tam){
     int i;
     if (arr != NULL){
         for(i = 0; i < tam; i++)
-            arr[i] = 1 + rand() % 100000; // preenchimento do vetor
+            arr[i] = 1 + rand() % 1000000; // preenchimento do vetor com valores aléatorios entre 1 e 1 milhão
     }
 }
-void merge(int *arr, int l, int m, int tam)
-{
-    int i, j, k;
-    int n1 = m - l + 1;
-    int n2 = tam- m;
+void merge(int *vet, int ini, int m, int tam){
+    int i, j, k, n1, n2;
+
+    n1 = m - ini + 1;
+    n2 = tam- m;
 
     /* create temp arrays */
-    int *L, *R;
-    L = (int*) malloc(n1*sizeof(int));
-    R = (int*) malloc(n2*sizeof(int));
+    int *aux1, *aux2;
+    aux1 = (int*) malloc(n1*sizeof(int));
+    aux2 = (int*) malloc(n2*sizeof(int));
 
     /* Copy data to temp arrays L[] and R[] */
     for (i = 0; i < n1; i++)
-        L[i] = arr[l + i];
+        aux1[i] = vet[ini + i];
     for (j = 0; j < n2; j++)
-        R[j] = arr[m + 1 + j];
+        aux2[j] = vet[m + 1 + j];
 
     /* Merge the temp arrays back into arr[l..r]*/
     i = 0; // Initial index of first subarray
     j = 0; // Initial index of second subarray
-    k = l; // Initial index of merged subarray
+    k = ini; // Initial index of merged subarray
     while (i < n1 && j < n2) {
-        if (L[i] <= R[j]) {
-            arr[k] = L[i];
+        if (aux1[i] <= aux2[j]) {
+            vet[k] = aux1[i];
             i++;
         }
         else {
-            arr[k] = R[j];
+            vet[k] = aux2[j];
             j++;
         }
         k++;
@@ -49,7 +49,7 @@ void merge(int *arr, int l, int m, int tam)
     /* Copy the remaining elements of L[], if there
     are any */
     while (i < n1) {
-        arr[k] = L[i];
+        vet[k] = aux1[i];
         i++;
         k++;
     }
@@ -57,60 +57,62 @@ void merge(int *arr, int l, int m, int tam)
     /* Copy the remaining elements of R[], if there
     are any */
     while (j < n2) {
-        arr[k] = R[j];
+        vet[k] = aux2[j];
         j++;
         k++;
     }
+    free(aux1);
+    free(aux2);
 }
 
 /* l is for left index and r is right index of the
 sub-array of arr to be sorted */
-void mergeSort(int *arr, int l, int tam)
-{
-    if (l < tam) {
+void mergeSort(int *vet, int ini, int tam){
+    if (ini < tam) {
         // Same as (l+r)/2, but avoids overflow for
         // large l and h
-        int m = l + (tam - l) / 2;
+        int m = ini + (tam - ini) / 2;
 
         // Sort first and second halves
-        mergeSort(arr, l, m);
-        mergeSort(arr, m + 1, tam);
+        mergeSort(vet, ini, m);
+        mergeSort(vet, m + 1, tam);
 
-        merge(arr, l, m, tam);
+        merge(vet, ini, m, tam);
     }
 }
 
 /* UTILITY FUNCTIONS */
 /* Function to print an array */
-void printArray (int *arr, int tam){
+void imprime (int *vet, int tam){
     int i;
     for (i = 0; i < tam; i++)
-        printf("\n[%d] ", arr[i]);
+        printf("\n[%d] ", vet[i]);
     printf("\n");
 }
 
 /* Driver code */
 int main(){
-    int tam, i, *arr;
+    int tam, i, *vet;
     clock_t t;
     printf("tamanho do vetor: ");
     scanf("%d", &tam);
-    arr = (int *) malloc(tam * sizeof(int));
-    preenche(arr, tam);
+    vet = (int *) malloc(tam * sizeof(int));
+    preenche(vet, tam);
 
-    printf("Given array is \n");
-    printArray(arr, tam);
+    printf("\nAntes da ordenação\n");
+   // imprime(vet, tam);
 
     t = clock();
-    mergeSort(arr, 0, tam - 1);
+    mergeSort(vet, 0, tam - 1);
     t = clock() - t;
 
 
-    printf("\nSorted array is \n");
-    printArray(arr, tam);
+    printf("\nVetor Ordenado\n");
+   // imprime(vet, tam);
 
-    //printf("\n\nTempo de execucao em ms mergesort: %f", (double)(end - begin) *1000 / CLOCKS_PER_SEC);
-    printf("Tempo de execucao: %f", ((double)t)/((CLOCKS_PER_SEC/1000)));//milisegundo
-    free(arr);
+
+    printf("Tempo de execucao: %f", ((double)t)/((CLOCKS_PER_SEC/1000)));// tempo de execução em milisegundo
+    free(vet);
     return 0;
 }
+
