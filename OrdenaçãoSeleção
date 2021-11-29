@@ -12,7 +12,7 @@ void preenche(int *vet, int tam){ //função preenche vetor
 void imprime (int *vet, int tam){ //função imprime vetor
     int i;
     for(i = 0; i < tam; i++){ //percorre todo o vetor para a impressão
-        printf("\n[%d] ", vet[i]); // printa valores existentes no vetor
+        printf(" |%d| ", vet[i]); // printa valores existentes no vetor
     }
 }
 void selection(int *vet, int tam){ // ordenação por seleção
@@ -42,18 +42,18 @@ int main(){ // funçao principal
     vet = (int *) malloc(tam * sizeof(int)); // aloca a mémoria
     preenche(vet, tam); // função preenche o vetor
 
-    printf("\nAntes da ordenação\n");
-   // imprime(vet, tam);
+    //printf("\nAntes da ordenação");
+    //imprime(vet, tam); //função para imprimir valores do vetor antes da ordenação
     printf("\n------\n");
 
     clock_t begin = clock(); // //armazena tempo inicial
     selection(vet, tam); // funcao ordenação metodo seleção
     clock_t end = clock(); // armazena o tempo final
-    printf("\nVetor Ordenado\n");
-   // imprime(vet, tam);
+   //printf("\nVetor Ordenado\n");
+   //imprime(vet, tam); //imprimir valores do vetor depois da ordenação
     printf("\n------\n");
 
-    printf("Tempo de execucao (Selecao): %f", ((double)(end - begin) / CLOCKS_PER_SEC)); // tempo de execução da ordenação em segundos
+    printf("Tempo de execucao (Selecao): %f", ((double)(end - begin) / CLOCKS_PER_SEC)); // calcula e imprime tempo de execução da ordenação em segundos
     free(vet); // libera espaço alocado na mémoria
 
     return 0;
