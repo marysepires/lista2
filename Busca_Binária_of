@@ -1,0 +1,92 @@
+
+//bunca binária comentada
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+// função para preenche vetor
+void preenche(int *vet, int tam){
+    int i;
+    if (vet != NULL){   //verifica se o vetor está vazio
+        for(i = 0; i < tam; i++)
+            vet[i] = 1 + rand() % 10001; // preencher com números aleatórios de 1 até 1000000
+    }
+}
+
+//função para imprimir vetor
+void imprime (int *vet, int tam){
+    int i;
+    for(i = 0; i < tam; i++){   //percorre o vetor para printar os valores inseridos
+        printf(" [%d] ", vet[i]);   // printa valores
+    }
+}
+
+//função ordenação por seleção
+void selecao(int *vet, int tam){
+    int i=0,j,menor,temp;   // variáveis para seleção
+    for(i=0;i<tam-1;i++){   // repetição de verificação
+        menor = i;
+    for(j=i+1; j<tam; j++){ // repetição para troca de posições
+        if(vet[j] < vet[menor]){    // comparação para troca de posições
+            menor = j;
+        }
+    }
+    // troca de variáveis
+    temp = vet[i];
+    vet[i] = vet[menor];
+    vet[menor] = temp;
+    }
+}
+
+// função para pesquisar um valor n
+int PesquisaBinaria(int *vet, int tam, int n){
+     int comeco = 0; //Limite inferior (em C o índice inicial é zero)
+     int final = tam-1; //Limite superior (tamanho do vetor -1
+                            // porque o índice inicial é zero )
+     int meio;
+     while (comeco <= final){   // repetição para percorrer todo vetor
+          //meio = comeco + (final-comeco)/2;
+          meio = (comeco + final)/2;
+          if (n == vet[meio])   // condição para verificar se o n encontrasse no meio do vetor
+               return meio; // se estiver, retorna meio
+          else if (n < vet[meio])   // condição para verificar se o n está na primeira metade do vetor
+               final = meio-1; // se estiver, reinicia a verificação do início até meio-1
+          else  // se não estiver, reinicia a verificação do meio+1 até final
+               comeco = meio+1;
+     }
+     return -1;   // não que valor n não foi encontrado encontrado
+}
+
+//função principal
+int main(){
+    clock_t t;  // variável utilizada para armazenar tempo
+    int n, i, *vet, tam, pos;   // variáveis utilizadas como parâmetros nas funções
+
+    printf("Tamanho do vetor: ");   // pergunta do usuário o tamanho do vetor
+    scanf("%d", &tam);  //aramazena o valor
+    vet = (int *) malloc(tam * sizeof(int)); // aloca a mémoria de acordo com o tamanho informado pelo usuário
+    preenche(vet, tam); // função preencher
+    selecao(vet, tam);  //função de ordenação por seleção
+    imprime (vet, tam); //função para imprimir valores do vetor
+
+    printf("\n\nValor a ser pesquisado?:"); // pergunta do usuário o valor n para pesquisa
+    scanf ("%d", &n);   // armazena o valor de n
+
+    // verifica o tempo de execução da busca
+    t = clock();    // armazena tempo
+    printf("\n------------------------------------\n");
+    pos = PesquisaBinaria(vet,tam, n); // pos recebe o resultado da pesquisa do valor n
+    t = clock() - t;    // calcula valor final menos inicial
+
+    if (pos==-1){   // condição para verificar e printar se, na pesquisa, o valor n não foi encontrado
+        printf("\n\nValor nao encontrado no vetor!");
+    }else{  // caso contrário, printa que o valor n foi encontrado
+        printf("\n\nValor encontrado na posicao %d", pos+1);
+    }
+
+    printf("\nTempo de execucao: %f", ((double)t)/((CLOCKS_PER_SEC/1000))); // calcula e printa tempo de execução em milisegundo
+    free(vet);  // libera a memória utilizada no vetor
+
+    return 0;
+} // fim da função principal
