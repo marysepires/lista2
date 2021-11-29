@@ -1,0 +1,75 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+void preenche(int *vetor1, int tam){ // função responsavel por preencher o vetor
+    int i;
+    for(i=0; i<tam; i++){ // percorre o vetor para preencher
+        vetor1[i] = i+ rand() % 1000000;  // preenchimento do vetor com valores aletorios de 1 a 1 milhão
+    }
+}
+
+void imprime(int *vetor1, int tam){ // função responsavel por imprimir o vetor
+    int i;
+    for(i = 0; i < tam; i++){ // percorre o vetor para a impressão
+        printf(" |%d| ", vetor1[i]); // imprime valores presentes no vetor
+    }
+}
+// função responsavel por escolher um elemento que chamaremos de pivo
+// é passado como parametro o vetor, o inicio e o fim (tam)
+int partition(int *vetor1, int inicio, int tam){
+    int j, aux;
+
+    //int aux = (int) malloc (tam*sizeof(int));
+    int pivo = vetor1[tam]; // pivo corresponde a ultima posição
+    int i = inicio-1;
+    for(j=inicio; j<tam; j++){ // percorre o vetor
+        if(vetor1[j] <= pivo){ // verificar se o j é menor que o pivo
+        i++;
+        // troca o elemento do vet[i] pelo do vet[j]
+        aux = vetor1[i];
+        vetor1[i] = vetor1[j];
+        vetor1[j] = aux;
+
+        }
+    }
+    aux = vetor1[i+1]; //incrementar o i
+    //ultima troca, troca o elemento da posiçao i pelo pivo (posição final)
+    vetor1[i+1] = vetor1[tam];
+    vetor1[tam] = aux;
+    return i+1; // retorna a posição do pivo
+}
+// função do metodo de ordenação quicksort, é passado como parametro o vetor, o inicio do vetor e o endereço de fim do vetor (seu tamanho)
+void quicksort(int *vetor1, int inicio, int tam){
+    int meio=0;
+    if(inicio<tam){
+        meio = partition(vetor1, inicio, tam); // particionamento inicial e identificação da posição do pivo
+        //realiza as chamadas recursivamente com valores antes e depois do pivô
+        quicksort(vetor1, inicio, meio-1);
+        quicksort(vetor1, meio+1, tam);
+    }
+}
+int main(){ // função principal
+    int tam, *vetor1;
+
+    printf("Tamanho do vetor: "); // pede ao usuario o tamanho do vetor
+    scanf("%d", &tam); // armazena o valor inserido na varievel tam
+
+    vetor1 = (int *) malloc(tam * sizeof(int)); // aloca memoria
+
+    printf("Vetor:\n");
+    preenche(vetor1, tam); // função preenche vetor
+    imprime(vetor1, tam); // imprime vetor antes da ordenação
+
+    printf("\n------\n");
+    clock_t begin = clock(); //armazena tempo inicial
+    quicksort(vetor1, 0, tam-1); // função de ordenação
+    clock_t end = clock(); // armazena tempo final
+    imprime(vetor1, tam); // imprime vetor depois da ordenação
+    printf("\n------\n");
+
+    printf("\n\nTempo de execucao (QuickSort): %f", (double)(end - begin)/ CLOCKS_PER_SEC); // calcula e imprime tempo de execução da ordenação em segundos
+    free(vetor1); // libera memoria alocada
+
+    return 0;
+}//fim da função principal
