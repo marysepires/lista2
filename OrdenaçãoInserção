@@ -13,10 +13,10 @@ void preenche(int *vet, int tam){ // função responsavel por preencher o vetor
 void imprime (int *vet, int tam){ // função responsavel por imprimir o vetor
     int i;
     for(i = 0; i < tam; i++){ // percorre o vetor para a impressão
-        printf("\n[%d] ", vet[i]); // imprime o vetor
+        printf(" |%d| ", vet[i]); // imprime o vetor
     }
 }
-void insert_sort(int *vet, int tam){ / função de ordenação metodo inserção
+void insert_sort(int *vet, int tam){ // função de ordenação metodo inserção
     int i=0, j, chave;
 
     for( j = 1; j<tam;j++){ // percorre o vetor completamente
@@ -38,17 +38,17 @@ int main(){ // função principal
     vet = (int *) malloc(tam * sizeof(int)); // aloca a mémoria
     preenche(vet, tam); // função preenche vetor
 
-    //printf("\nAntes da ordenação");
+    //printf("\nAntes da ordenação\n");
     //imprime(vet, tam); // imprime vetor antes da ordenação (função comentada pois foi usada para testes)
     printf("\n------");
     clock_t begin = clock(); //armazena tempo inicial
     insert_sort(vet, tam); // função de ordenação
     clock_t end = clock(); // armazena tempo final
-    //printf("\nVetor Ordenado");
+    //printf("\nVetor Ordenado\n");
     //imprime(vet, tam); //// imprime vetor depois da ordenação (função comentada pois foi usada para testes)
     printf("\n------");
 
-    printf("\n\nTempo de execucao em ms insertion: %f", (double)(end - begin)/ CLOCKS_PER_SEC); // calcula e imprime tempo de execução da ordenação em segundos
+    printf("\n\nTempo de execucao (Insercao): %f", (double)(end - begin)/ CLOCKS_PER_SEC); // calcula e imprime tempo de execução da ordenação em segundos
     free(vet); // libera memoria alocada
 
     return 0;
