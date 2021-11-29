@@ -1,0 +1,177 @@
+//Fila Encadeada Comentada
+#include <stdio.h>
+#include <stdlib.h>
+
+//função para criar o nó da fila
+struct no_fila{
+    int chave;  
+    int valor;
+    struct no_fila *prox;   // ponteiro que apontará para o próximo elementoda fila
+};
+// função para criar dois ponteiros
+struct fila{
+    struct no_fila *prim;   //ponteiro para apontar o inicio da fila
+    struct no_fila *ult;    //ponteiro para apontar o fim da fila
+};
+//função para inicializar a fila
+void cria_fila(struct fila *f){
+    f->prim=NULL;   //início da fila é dado como nulo
+    f->ult=NULL;    //fim da fila é dado como nulo
+}
+//função para verificar se a fila está vazia
+int fila_vazia(struct fila *f){
+    if( f->prim == NULL ){  //condição para verificar se existem elementos na fila
+        return 1;   //retorna 1 (true) para fila vazia
+    }else{
+        return 0;   //retorna 0 (false) para fila vazia
+    }
+}
+//função para enfileirar (inserir elementos na fila)
+void enfileirar(struct fila *f, int chave, int valor) {
+    struct no_fila *aux;    //ponteiro auxiliar 
+    
+    aux=(struct no_fila*)malloc(sizeof(struct no_fila));    //aloca memória para o ponteiro auxiliar
+    aux->chave=chave;
+    aux->valor=valor;
+    aux->prox=NULL;
+    valor = fila_vazia(f);  //recebe o retorno da função fila vazia
+
+    if(valor == 1) {    //verifica, caso a fila esteja vazia,
+        f->prim=aux;   //a auxiliar (valor que o usuário deseja inserir)
+        f->ult=aux;    //é inserida na única posição da fila (primeira e última)
+    }else {     //caso a fila possua elementos, 
+        f->ult->prox=aux;   //o nó da fila recebe uma posição da fila
+        f->ult=aux;     //e insere o a auxiliar neste novo nó
+    }
+}
+//função utilizada para desinfileirar (remover elementos da fila)
+struct no_fila* desenfileirar(struct fila *f){
+	struct no_fila *aux;    //ponteiro auxiliar 
+	
+	int valor = fila_vazia(f);  //recebe o retorno da função fila vazia
+
+    if(valor == 1) {    //verifica, caso a fila esteja vazia,
+		printf("fila vazia!\n");    //caso esteja, informa ao usuário
+		return 0;
+	}
+	
+	if(f->prim == f->ult){  //condição para verificar se a fila possui apenas um elemento
+		aux = f->prim;  //caso tenha, a auxiliar aponta para este único elemento
+		f->prim = NULL; //em seguida, lhe atribui valor nulo
+		f->ult = NULL;
+	}
+
+	else {  //caso possua mais de um elemento, 
+		aux = f->prim;  //auxiliar recebe o que f->prim  está apontando
+		f->prim = aux->prox;    //o f->prim  aponta para onde aux->prox esta apontando
+		aux->prox = NULL;   //até que aux-> prox aponta para nulo
+	}
+	return aux;	// retorna a auxiliar.
+}
+
+//função para remover elemento solicitado pelo usuário
+void Remover(struct fila *f, struct fila *f2, int val){
+	struct no_fila *aux;	//ponteiro auxiliar
+	int excluido = 0;		//variável contadora
+	
+	while(fila_vazia(f) != 1){  //enquanto a fila possuir elementos	
+		 
+		aux = desenfileirar(f);	//auxiliar recebe auxiliar retornada na função desenfileirar
+		if(val==aux->chave){    //condição para verificar se o valor solicitado pelo usuário foi "desenfileirado"
+		    printf("%d\n", aux ->chave);    //caso seja, printa ao usuário o valor
+			printf("Valor Removido!\n");	//junto com com a mensagem "valor removido"
+			excluido++; //incrementa contador
+		}else{  //caso não seja, 
+			enfileirar(f2, aux->chave, aux->valor); //guarda os elementos em uma fila 2
+		}							
+	}
+	
+	while(fila_vazia(f2) !=1){  //enquanto a fila 2 possuir elementos
+		aux = desenfileirar(f2);    //auxiliar recebe os valores desempilhados														
+		enfileirar(f, aux->chave, aux->valor);	//enfileira elementos na fila 1 		
+	}
+	
+    free(aux);  //libera auxiliar
+    if(excluido != 1){   //condição para verificar se o número informado pelo usuário foi encontrado
+		printf("Valor nao encontrado!\n");  //printa ao usuário, caso seja encontrado
+	} //**obs: o contador excluido foi verificado sob a idéia
+     //da fila não possui números repetidos
+}
+//função para pesquisar elementos na fila
+struct no_fila* pesquisa(struct fila *f, int valor){
+    struct no_fila *aux1;   //ponteiro auxiliar
+    aux1 = f -> prim;   //auxiliar recebe primeiro elemento da lista
+    while(aux1!=NULL){  //enquanto auxiliar não for nula
+        if (aux1 -> valor == valor){    //condição para comparar se o elemento informado pelo usuário foi encontrado
+            printf("\nValor encontrado!");  //caso seja, printa ao usuário
+            return aux1;    //retorna valor
+        }//caso não seja, auxilar recebe próximo elemento da fila
+        aux1 = aux1 ->prox;
+    }
+    printf("\nValor NÃO encontrado!");  //se o elemento não estiver na fila, printa ao usuário
+    return NULL;    //retorna nulo
+
+}
+//função de visualização dso elementos da fila
+void mostrar_fila(struct fila *f){
+    struct no_fila *aux;    //ponteiro auxiliar 
+    int y;  //variavel inteira
+    
+    y = fila_vazia(f);  //recebe o retorno da função fila vazia
+    if(y == 0){ //condiçao para verificar se a fila possui elementos
+        printf("\n==========Fila============\n\n"); //caso possua, printa fila ao usuário
+        for(aux=f->prim; aux!= NULL; aux=aux->prox){    //repetição para printar elementos
+            printf(" |%d| ", aux->valor);   //printa elementos ao usuário
+        }
+        printf("\n");
+    }else{  //caso não possua,
+        printf("\nA fila esta vazia\n");    //printa ao usuário
+    }
+}
+//função principal
+int main (){
+  struct fila f, f2; //cria fila 1 e fila 2
+  cria_fila (&f);   //inicializa fila 1
+  cria_fila (&f2);  //inicializa fila 2
+
+  int opcao, valor; //variáveis que receberam valores do usuário
+
+  do{   //enquanto o usuário informar um número váliso no menu
+     printf("\n==========Menu Fila==========\n");
+     printf("0. Sair\n");
+     printf("1. Adicionar Elemento na Fila\n"); //printa ao usuário as opções disponíveis
+     printf("2. Remover elemento\n");
+     printf("3. Mostrar Fila\n");
+     printf("4. Pesquisar valor na Fila\n");
+     printf("\nEscolha a opcao: "); //pede que o usuário informe a opção desejada
+     scanf("%d", &opcao);   //recebe e guarda a opção
+     
+     if(opcao == 1){    //condição para vericar se a opção condiz com enfileirar elemento
+        printf("\n1.Insercao de Elemento");
+    	printf("\nQual valor deseja inserir? ");    //pede que o usuário informe o elemento para enfileirar
+    	scanf("%d", &valor);    //recebe e guarda elemento
+        enfileirar(&f, valor, valor);   //chama a função enfileirar com devidos paramêtros
+     }
+     if(opcao == 2){    //condição para vericar se a opção condiz com desinfileirar elemento
+        printf("\n2.Remover Elemento");
+        printf("\nQual valor deseja remover? ");   //pede que o usuário informe o elemento para desinfileirar
+    	scanf("%d", &valor);    //recebe e guarda elemento
+        Remover(&f, &f2, valor);    //chama a função desinfileirar com devidos paramêtros
+     }
+     if(opcao == 3){    //condição para vericar se a opção condiz com mostrar elementos da fila
+    	mostrar_fila(&f);   //chama a função mostrar com devidos paramêtros
+     }
+     if(opcao == 4){    //condição para vericar se a opção condiz com pesquisar elemento da fila
+        printf("\n3.Pesquisar Valor");
+            printf("\nQual valor deseja pesquisar? ");  //pede que o usuário informe o elemento para pesquisar
+    	scanf("%d", &valor);    //recebe e guarda elemento
+        pesquisa(&f, valor);    //chama a função pesquisa com devidos paramêtros
+     }
+     if(opcao == 0){    //condição para vericar se a opção condiz com sair
+        break; //para execução 
+     }
+
+    }
+  while (opcao <= 4); //se a opção não condiz com nenhuma presente no menu fila 
+  printf("\n\tOpcao invalida\n");   //printa ao usuário sobre opção inválida
+}
