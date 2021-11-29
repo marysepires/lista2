@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h> // biblioteca para que seja possivel exibir o tempo de execução da ordenação
+
+void preenche(int *vet, int tam){ //função preenche vetor
+    int i;
+    if (vet != NULL){ // verificação se vetor está vazio
+        for(i = 0; i < tam; i++) // percorre vetor para o preenchimento
+            vet[i] = 1 + rand() % 1000000; // preenchimento do vetor com valores aleatorios de 1 a 1 milhão
+    }
+}
+void imprime (int *vet, int tam){ //função imprime vetor
+    int i;
+    for(i = 0; i < tam; i++){ //percorre todo o vetor para a impressão
+        printf("\n[%d] ", vet[i]); // printa valores existentes no vetor
+    }
+}
+void selection(int *vet, int tam){ // ordenação por seleção
+    int i=0, j, menor, temp; // variaveis que irão auxiliar na ordenação
+
+
+    for(i=0;i<tam-1;i++){
+    //procura o menor elemento em relação a i
+    menor = i;
+    for(j=i+1; j<tam; j++){
+        if(vet[j] < vet[menor]){
+        menor = j;
+        }
+    }
+
+    //troca os valores da posição atual com a "menor"
+    temp = vet[i];
+    vet[i] = vet[menor];
+    vet[menor] = temp;
+    }
+}
+int main(){ // funçao principal
+   int n, i, *vet, tam;
+
+    printf("Tamanho do vetor: "); // é inserido o tamanho do vetor
+    scanf("%d", &tam);
+    vet = (int *) malloc(tam * sizeof(int)); // aloca a mémoria
+    preenche(vet, tam); // função preenche o vetor
+
+    printf("\nAntes da ordenação\n");
+   // imprime(vet, tam);
+    printf("\n------\n");
+
+    clock_t begin = clock(); // //armazena tempo inicial
+    selection(vet, tam); // funcao ordenação metodo seleção
+    clock_t end = clock(); // armazena o tempo final
+    printf("\nVetor Ordenado\n");
+   // imprime(vet, tam);
+    printf("\n------\n");
+
+    printf("Tempo de execucao (Selecao): %f", ((double)(end - begin) / CLOCKS_PER_SEC)); // tempo de execução da ordenação em segundos
+    free(vet); // libera espaço alocado na mémoria
+
+    return 0;
+} // fim da função principal
