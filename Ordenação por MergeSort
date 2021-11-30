@@ -1,0 +1,104 @@
+//Merge Short
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+//função para preencher o vetor com números aléatorios
+void preenche(int *arr, int tam){
+    int i;  //variável que vai percorrer o vetor
+    if (arr != NULL){   //condição para preencher o vetor enquanto seu tamanho não for nulo
+        for(i = 0; i < tam; i++)    //repetição para preenchimento
+            arr[i] = 1 + rand() % 1000000; // preenchimento do vetor com valores aléatorios entre 1 e 1 milhão
+    }
+}
+//função merge: ordenação dos vetores auxiliares e do vetor principal
+void merge(int *vet, int ini, int m, int tam){
+    int i, j, k, n1, n2;    //variáveis inteiras
+
+    n1 = m - ini + 1;   //variável n1 recebe os números do início (primeiro elemento) até o meio
+    n2 = tam- m;    //variável n2 recebe os números do meio até o fim (último elemento)
+
+    int *aux1, *aux2;   //vetores auxiliares
+    aux1 = (int*) malloc(n1*sizeof(int));   //aloca memória 
+    aux2 = (int*) malloc(n2*sizeof(int));   //para ambos vetores
+
+    
+    for (i = 0; i < n1; i++)    //repetição para vetor auxiliar 1
+        aux1[i] = vet[ini + i]; //receber os números do início até o meio
+    for (j = 0; j < n2; j++)    //função para vetor auxiliar 2
+        aux2[j] = vet[m + 1 + j]; //receber os números do meio até o fim
+    
+    //atribui valores às variáveis inteiras
+    i = 0; 
+    j = 0; 
+    k = ini; 
+    while (i < n1 && j < n2) {  //enquanto os números estiverem dentro dos parâmetros
+        if (aux1[i] <= aux2[j]) {   //condição para verificar se valores do vetor auxiliar são menores/iguais aos valores do vetor auxiliar 2
+            vet[k] = aux1[i];   //caso sejam, ordena os valores do vetor auxiliar 1 no vetor principal
+            i++;    //incrementa i, vai para o próximo valor do vetor auxiliar 1
+        }else { //caso não sejam, 
+            vet[k] = aux2[j];   //ordena os valores do vetor auxiliar 2 no vetor principal
+            j++;    //incrementa j, vai para o próximo valor do vetor auxiliar 2
+        }
+        k++;    //incrementa k, vai para o próximo valor do vetor auxiliar principal
+    }
+
+    while (i < n1) {    //enquanto i estiver dentro dos parâmetros
+        vet[k] = aux1[i];   //ordena os valores do vetor auxiliar 1 no vetor principal
+        i++;    //incrementa i, vai para o próximo valor do vetor auxiliar 1
+        k++;   //incrementa k, vai para o próximo valor do vetor auxiliar principal
+    }
+
+    while (j < n2) {     //enquanto j estiver dentro dos parâmetros
+        vet[k] = aux2[j];  //ordena os valores do vetor auxiliar 2 no vetor principal
+        j++;    //incrementa j, vai para o próximo valor do vetor auxiliar 2
+        k++;    //incrementa k, vai para o próximo valor do vetor auxiliar principal
+    }
+    free(aux1); //libera memória do vetor auxiliar 1
+    free(aux2); //libera memória do vetor auxiliar 2
+}
+//função mergeSort: divide os valores do vetor principal em vetores auxiliares
+void mergeSort(int *vet, int ini, int tam){
+    if (ini < tam){ //condição para percorrer todos os números do vetor principal
+        int m = ini + (tam - ini) / 2; //define a variável meio, calcula e aramzena o meio do vetor principal
+
+        mergeSort(vet, ini, m); //recursividade: chama a se mesma com os parâmetros definidos para vetor auxiliar 1
+        mergeSort(vet, m + 1, tam); //recursividade: chama a se mesma com os parâmetros definidos para vetor auxiliar 2
+
+        merge(vet, ini, m, tam);    //chama a função com os parâmetros vetor, início, meio e tamanho do vetor
+    }
+}
+//função para imprimir vetor principal
+void imprime (int *vet, int tam){
+    int i;  //variável inteira
+    for (i = 0; i < tam; i++)   //repetição para percorrer todo vetor
+        printf("\n[%d] ", vet[i]);  //printar os elementos do vetor
+    printf("\n");
+}
+
+//função principal
+int main(){
+    int tam, i, *vet; //variáveis inteiras e ponteiro do vetor principal
+   
+    printf("tamanho do vetor: ");   //pede que o usuário informe o tamanho do vetor
+    scanf("%d", &tam);  //recebe e guarda o tamanho do vetor
+    vet = (int *) malloc(tam * sizeof(int)); //aloca memória para o ponteiro vetor
+    preenche(vet, tam); //chama a função preenche, e o vetor recebe números aléatorios
+
+    //printf("\nAntes da ordenação\n"); //informa que o vetor ainda não foi ordenado (em casos de teste)
+   //imprime(vet, tam); //printar ao usuário os números aleatórios no vetor (em casos de teste)
+
+    clock_t begin = clock(); //armazena tempo inicial 
+    mergeSort(vet, 0, tam - 1); //chama a função com os parâmetros vetor, início, meio e tamanho do vetor
+    clock_t end = clock(); // armazena tempo final
+
+    //printf("\nVetor Ordenado\n"); //informa que o vetor foi ordenado (em casos de teste)
+    //imprime(vet, tam);    //printar ao usuário os números ordenados no vetor (em casos de teste)
+
+
+    printf("\n\nTempo de execucao (Mergesort) : %f", (double)(end - begin)/ CLOCKS_PER_SEC); // calcula e imprime tempo de execução da ordenação em segundos
+    
+    free(vet);  //liberar memória do ponteiro do vetor principal
+    return 0;
+}
