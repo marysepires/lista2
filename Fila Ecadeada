@@ -6,7 +6,7 @@
 struct no_fila{
     int chave;  
     int valor;
-    struct no_fila *prox;   // ponteiro que apontará para o próximo elementoda fila
+    struct no_fila *prox;   // ponteiro que apontará para o próximo elemento da fila
 };
 // função para criar dois ponteiros
 struct fila{
